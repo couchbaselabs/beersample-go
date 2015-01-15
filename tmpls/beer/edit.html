@@ -1,0 +1,60 @@
+{{define "content"}}
+{{if .IsCreate}}
+<h3>Create Beer</h3>
+{{else}}
+<h3>Editing {{.Beer.Name}}</h3>
+{{end}}
+
+<form method="post" action="">
+    <fieldset>
+        <legend>General Info</legend>
+        <div class="span12">
+            <div class="span6">
+                <label>Name</label>
+                <input type="text" name="beer_name" placeholder="The name of the beer." value="{{.Beer.Name}}">
+
+                <label>Description</label>
+                <input type="text" name="beer_description" placeholder="A short description." value="{{.Beer.Description}}">
+            </div>
+            <div class="span6">
+                <label>Style</label>
+                <input type="text" name="beer_style" placeholder="Bitter? Sweet? Hoppy?" value="{{.Beer.Style}}">
+
+                <label>Category</label>
+                <input type="text" name="beer_category" placeholder="Ale? Stout? Lager?" value="{{.Beer.Category}}">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Details</legend>
+        <div class="span12">
+            <div class="span6">
+                <label>Alcohol (ABV)</label>
+                <input type="text" name="beer_abv" placeholder="The beer's ABV" value="{{.Beer.Abv}}">
+
+                <label>Biterness (IBU)</label>
+                <input type="text" name="beer_ibu" placeholder="The beer's IBU" value="{{.Beer.Ibu}}">
+            </div>
+            <div class="span6">
+                <label>Beer Color (SRM)</label>
+                <input type="text" name="beer_srm" placeholder="The beer's SRM" value="{{.Beer.Srm}}">
+
+                <label>Universal Product Code (UPC)</label>
+                <input type="text" name="beer_upc" placeholder="The beer's UPC" value="{{.Beer.Upc}}">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Brewery</legend>
+        <div class="span12">
+            <div class="span6">
+                <label>Brewery</label>
+                <input type="text" name="beer_brewery_id" placeholder="The brewery" value="{{.Beer.BreweryId}}">
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+</form>
+{{end}}

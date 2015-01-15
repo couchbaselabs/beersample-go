@@ -1,0 +1,13 @@
+{{define "content"}}
+<h3>Show Details for "{{.Brewery.Name}}"</h3>
+<table class="table table-striped">
+    <tbody>
+    {{range $k, $v := .BreweryFields}}
+    <tr>
+        <td><strong>{{$k}}</strong></td>
+        <td>{{$v}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+{{end}}

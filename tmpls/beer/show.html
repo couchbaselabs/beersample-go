@@ -1,0 +1,22 @@
+{{define "content"}}
+<h3>Show Details for Beer "{{.Beer.Name}}"</h3>
+<table class="table table-striped">
+    <tbody>
+    <tr>
+        <td><strong>brewery_id</strong></td>
+        <td><a href="/breweries/show/{{.Beer.BreweryId}}">{{.Beer.BreweryId}}</a></td>
+    </tr>
+    {{range $k, $v := .BeerFields}}
+    <tr>
+        <td><strong>{{$k}}</strong></td>
+        <td>{{$v}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+
+<a class="btn btn-medium btn-warning"
+   href="/beers/edit/{{.Beer.Id}}">Edit</a>
+<a class="btn btn-medium btn-danger"
+   href="/beers/delete/{{.Beer.Id}}">Delete</a>
+{{end}}
