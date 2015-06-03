@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/couchbaselabs/gocouchbase"
+	"github.com/couchbaselabs/gocb"
 	"html/template"
 	"net/http"
 	"net/url"
@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var bucket *gocouchbase.Bucket
+var bucket *gocb.Bucket
 var tmpls map[string]*template.Template
 
 const (
@@ -106,14 +106,14 @@ type tdBeerIndex struct {
 }
 
 func beerIndexHandler(w http.ResponseWriter, r *http.Request) {
-	vq := gocouchbase.NewViewQuery("beer", "by_name").Limit(entriesPerPage).Stale(gocouchbase.Before)
+	vq := gocb.NewViewQuery("beer", "by_name").Limit(entriesPerPage).Stale(gocb.Before)
 	rows := bucket.ExecuteViewQuery(vq)
 	var row beerByNameRow
 	var beers []Beer
 	for rows.Next(&row) {
 		beer := Beer{}
 
-		if _, _, err := bucket.Get(row.Id, &beer); err != nil {
+		if _, err := bucket.Get(row.Id, &beer); err != nil {
 			fmt.Printf("Get Error: %v\n", err)
 			continue
 		}
@@ -135,7 +135,7 @@ func beerIndexHandler(w http.ResponseWriter, r *http.Request) {
 func beerSearchHandler(w http.ResponseWriter, r *http.Request) {
 	value := r.URL.Query().Get("value")
 
-	vq := gocouchbase.NewViewQuery("beer", "by_name").Limit(entriesPerPage).Stale(gocouchbase.Before)
+	vq := gocb.NewViewQuery("beer", "by_name").Limit(entriesPerPage).Stale(gocb.Before)
 	vq.Range(value, value+"\u0FFFF", false)
 
 	rows := bucket.ExecuteViewQuery(vq)
@@ -144,7 +144,7 @@ func beerSearchHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next(&row) {
 		beer := Beer{}
 
-		if _, _, err := bucket.Get(row.Id, &beer); err != nil {
+		if _, err := bucket.Get(row.Id, &beer); err != nil {
 			fmt.Printf("Get Error: %v\n", err)
 			continue
 		}
@@ -175,7 +175,7 @@ func beerShowHandler(w http.ResponseWriter, r *http.Request) {
 	id := strings.Split(r.URL.Path, "/")[3]
 
 	var beer BeerFull
-	if _, _, err := bucket.Get(id, &beer); err != nil {
+	if _, err := bucket.Get(id, &beer); err != nil {
 		fmt.Fprintf(w, "Get Error: %v\n", err)
 		return
 	}
@@ -224,7 +224,7 @@ func beerEditHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
 		var beer BeerFull
-		if _, _, err := bucket.Get(id, &beer); err != nil {
+		if _, err := bucket.Get(id, &beer); err != nil {
 			fmt.Fprintf(w, "Get Error: %v\n", err)
 			return
 		}
@@ -254,7 +254,7 @@ type tdBrewIndex struct {
 }
 
 func brewIndexHandler(w http.ResponseWriter, r *http.Request) {
-	vq := gocouchbase.NewViewQuery("brewery", "by_name").Limit(entriesPerPage)
+	vq := gocb.NewViewQuery("brewery", "by_name").Limit(entriesPerPage)
 	rows := bucket.ExecuteViewQuery(vq)
 	var row breweryByNameRow
 	var breweries []Brewery
@@ -274,7 +274,7 @@ func brewIndexHandler(w http.ResponseWriter, r *http.Request) {
 func brewSearchHandler(w http.ResponseWriter, r *http.Request) {
 	value := r.URL.Query().Get("value")
 
-	vq := gocouchbase.NewViewQuery("brewery", "by_name").Limit(entriesPerPage)
+	vq := gocb.NewViewQuery("brewery", "by_name").Limit(entriesPerPage)
 	vq.Range(value, value+"\u0FFFF", false)
 
 	rows := bucket.ExecuteViewQuery(vq)
@@ -305,7 +305,7 @@ func brewShowHandler(w http.ResponseWriter, r *http.Request) {
 	id := strings.Split(r.URL.Path, "/")[3]
 
 	var brew BreweryFull
-	if _, _, err := bucket.Get(id, &brew); err != nil {
+	if _, err := bucket.Get(id, &brew); err != nil {
 		fmt.Fprintf(w, "Get Error: %v\n", err)
 		return
 	}
@@ -328,7 +328,7 @@ func brewShowHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	cluster, _ := gocouchbase.Connect("couchbase://192.168.7.26")
+	cluster, _ := gocb.Connect("couchbase://127.0.0.1")
 	bucket, _ = cluster.OpenBucket("beer-sample", "")
 
 	http.HandleFunc("/", welcomeHandler)
