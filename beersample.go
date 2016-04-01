@@ -107,7 +107,10 @@ type tdBeerIndex struct {
 
 func beerIndexHandler(w http.ResponseWriter, r *http.Request) {
 	vq := gocb.NewViewQuery("beer", "by_name").Limit(entriesPerPage).Stale(gocb.Before)
-	rows := bucket.ExecuteViewQuery(vq)
+	rows, err := bucket.ExecuteViewQuery(vq)
+	if nil != err {
+		panic(err)
+	}
 	var row beerByNameRow
 	var beers []Beer
 	for rows.Next(&row) {
@@ -138,7 +141,11 @@ func beerSearchHandler(w http.ResponseWriter, r *http.Request) {
 	vq := gocb.NewViewQuery("beer", "by_name").Limit(entriesPerPage).Stale(gocb.Before)
 	vq.Range(value, value+"\u0FFFF", false)
 
-	rows := bucket.ExecuteViewQuery(vq)
+	rows, err := bucket.ExecuteViewQuery(vq)
+	if nil != err {
+		panic(err)
+	}
+
 	var row beerByNameRow
 	var beers []Beer
 	for rows.Next(&row) {
@@ -255,7 +262,10 @@ type tdBrewIndex struct {
 
 func brewIndexHandler(w http.ResponseWriter, r *http.Request) {
 	vq := gocb.NewViewQuery("brewery", "by_name").Limit(entriesPerPage)
-	rows := bucket.ExecuteViewQuery(vq)
+	rows, err := bucket.ExecuteViewQuery(vq)
+	if nil != err {
+		panic(err)
+	}
 	var row breweryByNameRow
 	var breweries []Brewery
 	for rows.Next(&row) {
@@ -277,7 +287,11 @@ func brewSearchHandler(w http.ResponseWriter, r *http.Request) {
 	vq := gocb.NewViewQuery("brewery", "by_name").Limit(entriesPerPage)
 	vq.Range(value, value+"\u0FFFF", false)
 
-	rows := bucket.ExecuteViewQuery(vq)
+	rows, err := bucket.ExecuteViewQuery(vq)
+	if nil != err {
+		panic(err)
+	}
+
 	var row breweryByNameRow
 	var breweries []Brewery
 	for rows.Next(&row) {
